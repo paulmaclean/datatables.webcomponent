@@ -5,6 +5,7 @@ A lightweight webcomponent for creating datatables. Inspired by jQuery Datatable
 [Datatables.webcomponent Documentation](https://github.com/paulmaclean/datatables.webcomponent/wiki)
 
 [Documentation](https://github.com/paulmaclean/datatables.webcomponent/wiki)
+
 ---
 
 ### Install
@@ -16,11 +17,11 @@ npm install @p_mac/datatables.webcomponent --save
 
 ---
 
-### License
+##License
 
 MIT
 
-### Features
+## Features
 
 * Sortable columns
 * Pagination
@@ -33,6 +34,6 @@ MIT
 
 ---
 
-### Usage
+## Usage
 
 See the [Documentation](https://github.com/paulmaclean/datatables.webcomponent/wiki) for usage instructions.
