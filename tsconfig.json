@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "allowUnreachableCode": true,
+        "declaration": true,
+        "declarationDir": "./lib",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "lib": [
+            "dom",
+            "es2015"
+        ],
+        "moduleResolution": "node",
+        "module": "es2015",
+        "target": "es2015",
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
