@@ -1,11 +1,16 @@
 {
-    "name": "@pmac/datatables.webcomponent",
+    "name": "@p_mac/datatables.webcomponent",
     "main": "./dist/index.js",
     "types": "./lib/index.d.ts",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "dependencies": {},
+    "repository": {
+        "type" : "git",
+        "url" : "https://github.com/paulmaclean/datatables.webcomponent"
+    },
+
     "scripts": {
-        "prepare": "webpack && webpack --config webpack.examples.config.js",
+        "prepublish": "webpack && webpack --config webpack.examples.config.js",
         "build": "webpack && webpack --config webpack.examples.config.js",
         "test": "karma start",
         "build-examples": "webpack --config webpack.examples.config.js",
