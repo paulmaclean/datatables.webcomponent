@@ -8,9 +8,9 @@ A lightweight webcomponent for creating datatables. Inspired by jQuery Datatable
 
 ---
 
-### Install
+## Install
 
-## npm
+### npm
 ```
 npm install @p_mac/datatables.webcomponent --save
 ```
