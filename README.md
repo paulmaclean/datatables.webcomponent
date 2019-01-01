@@ -4,8 +4,6 @@ A lightweight webcomponent for creating datatables. Inspired by jQuery Datatable
 
 [Datatables.webcomponent Documentation](https://github.com/paulmaclean/datatables.webcomponent/wiki)
 
-[Documentation](https://github.com/paulmaclean/datatables.webcomponent/wiki)
-
 ---
 
 ## Install
