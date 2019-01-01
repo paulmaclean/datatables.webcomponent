@@ -2,9 +2,12 @@ const TerserPlugin = require('terser-webpack-plugin');
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-    entry: "./src/index.ts",
+    entry: "./src/standalone.ts",
     output: {
-        filename: './index.js',
+        filename: './datatables.webcomponent.js',
+        library: 'datatables.webcomponent',
+        libraryTarget: 'umd',
+        umdNamedDefine: true
     },
     mode: 'production',
     resolve: {

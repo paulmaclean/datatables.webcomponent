@@ -2,10 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Example App</title>
+    <title>Lit Element Example</title>
 </head>
 <body>
+    <h2>Example Usage inside LitElement render</h2>
     <example-app></example-app>
     <script src="dist/index.js"></script>
 </body>
 </html>
+
+<h4>App Sample Code</h4>
+<pre>
+    <code>
+        import {LitElement, html} from "@polymer/lit-element";
+        import * as sampleData from './generated.json';
+        import {ColOpts, PaginateOpts, SummableOpts} from "../../src/declarations";
+
+        export default class App extends LitElement {
+        public static componentName = 'app';
+
+            render() {
+                return html`
+                    &lt;example-data-table
+                        .data="${sampleData.default}"
+                        .summable="${this.summableOptions()}"
+                        .filterable="${this.filterableOptions()}"
+                        .paginatable="${this.paginatableOptions()}"
+                    &gt;
+                    &lt;/example-data-table&gt;`
+            }
+
+            filterableOptions(): ColOpts {
+                return {colIndexes: [5], enabled: true}
+            }
+
+            summableOptions(): SummableOpts {
+                return {colIndexes: [2], enabled: true, formatter: (val, index) => { return currencyFormatter.format(val) }}
+            }
+
+            paginatableOptions(): PaginateOpts {
+                return {resultsPerPage: 5, enabled: true, perPageOptions: [5, 10, 15]}
+            }
+        }
+
+        const currencyFormatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        });
+    </code>
+</pre>

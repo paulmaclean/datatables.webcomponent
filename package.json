@@ -1,18 +1,21 @@
 {
     "name": "@p_mac/datatables.webcomponent",
+    "description": "A web component built with lit element, inspired by jQuery datatables",
     "main": "./dist/index.js",
-    "types": "./lib/index.d.ts",
+    "types": "./dist/index.d.ts",
     "version": "0.0.2",
     "dependencies": {},
+    "license": "MIT",
     "repository": {
         "type" : "git",
         "url" : "https://github.com/paulmaclean/datatables.webcomponent"
     },
 
     "scripts": {
+        "test": "karma start",
         "prepublish": "webpack && webpack --config webpack.examples.config.js",
         "build": "webpack && webpack --config webpack.examples.config.js",
-        "test": "karma start",
+        "build-standalone": "webpack --config webpack.standalone.config.js",
         "build-examples": "webpack --config webpack.examples.config.js",
         "watch-examples": "webpack --config webpack.examples.config.js --watch"
     },

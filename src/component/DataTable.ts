@@ -1,6 +1,6 @@
 import {LitElement, html, property} from "@polymer/lit-element";
 import {parseTable} from "../utils/table";
-import {Filter, ColOpts, AjaxOpts, PaginateOpts, Exportable, SummableOpts} from "../declarations";
+import {Filter, FilterableOpts, AjaxOpts, PaginateOpts, ExportableOpts, SummableOpts} from "../declarations";
 import {
     applyAllFilters, filterOnCol, getPageSlice,
     getSortedFlags, getSummedCols, hasActiveFilter, resetFilters, searchData,
@@ -36,7 +36,7 @@ export default class DataTable extends LitElement {
     };
 
     @property({type: Object})
-    filterable: ColOpts = {
+    filterable: FilterableOpts = {
         enabled: true,
         colIndexes: []
     };
@@ -49,7 +49,7 @@ export default class DataTable extends LitElement {
     };
 
     @property({type: Object})
-    exportables: Array<Exportable> = [
+    exportables: Array<ExportableOpts> = [
         {'type': 'csv', 'enabled': true, filename: 'export.csv'}
     ];
 
@@ -237,7 +237,7 @@ export default class DataTable extends LitElement {
         this.refreshData(this.originalData, true)
     }
 
-    export(exportable: Exportable) {
+    export(exportable: ExportableOpts) {
         switch (exportable.type) {
             case 'csv':
                 const rows = collectionToValues(this.getExportableData());

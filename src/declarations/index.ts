@@ -10,6 +10,10 @@ export interface ColOpts extends ExtensionOpts {
     colIndexes: any
 }
 
+export interface FilterableOpts extends ColOpts {
+
+}
+
 export interface SummableOpts extends ColOpts {
     formatter?: Function
 }
@@ -24,7 +28,7 @@ export interface AjaxOpts {
 }
 
 
-export interface Exportable extends ExtensionOpts {
+export interface ExportableOpts extends ExtensionOpts {
     type: string
     filename: string
 }
