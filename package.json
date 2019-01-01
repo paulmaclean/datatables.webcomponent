@@ -5,8 +5,9 @@
     "version": "0.0.1",
     "dependencies": {},
     "scripts": {
-        "build" : "webpack && webpack --config webpack.examples.config.js",
-        "test" : "karma start",
+        "prepare": "webpack && webpack --config webpack.examples.config.js",
+        "build": "webpack && webpack --config webpack.examples.config.js",
+        "test": "karma start",
         "build-examples": "webpack --config webpack.examples.config.js",
         "watch-examples": "webpack --config webpack.examples.config.js --watch"
     },
