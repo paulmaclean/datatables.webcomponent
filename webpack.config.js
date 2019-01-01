@@ -1,10 +1,14 @@
 const TerserPlugin = require('terser-webpack-plugin');
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const DtsBundleWebpack = require('dts-bundle-webpack');
 
 module.exports = {
-    entry: "./src/index.ts",
+    entry: "./src/standalone.ts",
     output: {
-        filename: './index.js',
+        filename: './datatables.webcomponent.js',
+        library: 'datatables.webcomponent',
+        libraryTarget: 'umd',
+        umdNamedDefine: true
     },
     mode: 'production',
     resolve: {
@@ -38,6 +42,13 @@ module.exports = {
         ]
     },
     plugins: [
+        new DtsBundleWebpack(
+            {
+                name: '@p_mac/datatables.webcomponent',
+                main: 'lib/src/index.d.ts',
+                out: '~/lib/index.d.ts',
+            }
+        )
         // new BundleAnalyzerPlugin({
         //         analyzerMode: 'server',
         //         generateStatsFile: true,
