@@ -17,7 +17,7 @@ npm install @p_mac/datatables.webcomponent --save
 
 ---
 
-##License
+## License
 
 MIT
 
