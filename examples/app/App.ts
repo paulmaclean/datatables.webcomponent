@@ -1,6 +1,5 @@
 import {LitElement, html} from "@polymer/lit-element";
 import * as sampleData from './generated.json';
-import {ColOpts, PaginateOpts, SummableOpts} from "../../src/declarations";
 
 export default class App extends LitElement {
     public static componentName = 'app';
@@ -9,24 +8,13 @@ export default class App extends LitElement {
         return html`
             <example-data-table 
                 .data="${sampleData.default}"
-                .summable="${this.summableOptions()}"
-                .filterable="${this.filterableOptions()}"
-                .paginatable="${this.paginatableOptions()}"
+                .summable="${ {colIndexes: [2], formatter: (val, index) => { return currencyFormatter.format(val)}} }"
+                .filterable="${ {colIndexes: [5]} }"
+                .paginatable="${ {resultsPerPage: 5} }"
                 >
             </example-data-table>`
     }
 
-    filterableOptions(): ColOpts {
-        return {colIndexes: [5], enabled: true}
-    }
-
-    summableOptions(): SummableOpts {
-        return {colIndexes: [2], enabled: true, formatter: (val, index) => { return currencyFormatter.format(val) }}
-    }
-
-    paginatableOptions(): PaginateOpts {
-        return {resultsPerPage: 5, enabled: true, perPageOptions: [5, 10, 15]}
-    }
 }
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {

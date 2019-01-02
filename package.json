@@ -3,7 +3,7 @@
     "description": "A web component built with lit element, inspired by jQuery datatables",
     "main": "./src/index.ts",
     "types": "./lib/index.d.ts",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "dependencies": {},
     "license": "MIT",
     "repository": {
@@ -12,7 +12,7 @@
     },
     "scripts": {
         "test": "karma start",
-        "prepublish": "webpack && webpack --config webpack.examples.config.js",
+        "prepublish": "karma start && webpack && webpack --config webpack.examples.config.js",
         "build": "webpack && webpack --config webpack.examples.config.js",
         "build-standalone": "webpack --config webpack.standalone.config.js",
         "build-examples": "webpack --config webpack.examples.config.js",

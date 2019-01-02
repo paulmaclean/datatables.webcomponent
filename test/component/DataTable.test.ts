@@ -15,21 +15,6 @@ describe('DataTable', () => {
             done();
         });
 
-        it('should call initFromData if the data prop is set', () => {
-            spyOn(dataTable, 'initFromData');
-            dataTable.data = [{x: 1}];
-            dataTable.firstUpdated();
-
-            expect(dataTable.initFromData).toHaveBeenCalled()
-        });
-
-        it('should call initFromAjax if the ajax.url prop is set', () => {
-            spyOn(dataTable, 'initFromAjax');
-            dataTable.ajax.url = 'some-url';
-            dataTable.firstUpdated();
-            expect(dataTable.initFromAjax).toHaveBeenCalled()
-        });
-
         it('should call initFromTable if the data and ajax props are not set and there is a slotted table', (done) => {
             makeSlottedDataTable();
             getDataTable().then((result: DataTable) => {
@@ -79,6 +64,19 @@ describe('DataTable', () => {
                 expect(dataTable.rows.length).toBeGreaterThan(0);
                 done();
             })
+        });
+    });
+
+    describe('updateData', () => {
+        it('should call the refreshData method', (done) => {
+            makeSlottedDataTable();
+            getDataTable().then((dataTable: DataTable) => {
+                spyOn(dataTable, 'refreshData');
+                dataTable.updateData(sampleData.default);
+
+                expect(dataTable.refreshData).toHaveBeenCalled();
+                done();
+            });
         });
     });
 

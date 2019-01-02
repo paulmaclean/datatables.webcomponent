@@ -11,7 +11,7 @@ import {isEqual} from "lodash";
 import {exportCsv, makeExportableCsv} from "../utils/export";
 
 import {clearInputsFromArray} from "../utils/dom";
-import {datasetToProps, findInSlot} from "../utils/component";
+import {datasetToProps, findInSlot, mergeDefaults} from "../utils/component";
 
 export default class DataTable extends LitElement {
 
@@ -26,8 +26,7 @@ export default class DataTable extends LitElement {
     @property({type: Array})
     rows: Array<any> = [];
 
-    @property({type: Object})
-    summable: SummableOpts = {
+    protected summableDefaults: SummableOpts = {
         enabled: true,
         colIndexes: [],
         formatter: (val, index) => {
@@ -36,27 +35,38 @@ export default class DataTable extends LitElement {
     };
 
     @property({type: Object})
-    filterable: FilterableOpts = {
+    summable: SummableOpts = this.summableDefaults;
+
+    filterableDefaults : FilterableOpts = {
         enabled: true,
         colIndexes: []
     };
 
     @property({type: Object})
-    paginatable: PaginateOpts = {
+    filterable: FilterableOpts = this.filterableDefaults;
+
+    paginatableDefaults : PaginateOpts = {
         enabled: true,
         resultsPerPage: 10,
         perPageOptions: [5, 10, 20, 50, 100]
     };
 
     @property({type: Object})
-    exportables: Array<ExportableOpts> = [
+    paginatable: PaginateOpts = this.paginatableDefaults;
+
+    exportablesDefaults: Array<ExportableOpts> = [
         {'type': 'csv', 'enabled': true, filename: 'export.csv'}
     ];
 
     @property({type: Object})
-    ajax: AjaxOpts = {
+    exportables: Array<ExportableOpts> = this.exportablesDefaults;
+
+    ajaxDefaults : AjaxOpts = {
         url: ''
     };
+
+    @property({type: Object})
+    ajax: AjaxOpts = this.ajaxDefaults;
 
     public currentPage: number = 1;
     protected originalData: Array<any> = [];
@@ -68,46 +78,44 @@ export default class DataTable extends LitElement {
 
     firstUpdated() {
         datasetToProps(this);
+        mergeDefaults(this, ['summable', 'filterable', 'paginatable', 'exportables', 'ajax']);
+
+        this.init()
+    }
+
+    init(data?: Array<any>) {
+        if(data && data.length) {
+            this.data = data;
+        }
 
         if (this.data.length) {
-            this.initFromData(this.data);
+            this.updateData(this.data);
             return
         }
 
         if (this.ajax.url) {
-            this.initFromAjax();
+            fetch(this.ajax.url)
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    if (!isCollection(data)) {
+                        throw new Error('The dataset is not a uniform array of objects. You may need to pre-process the returned data and use the data property')
+                    }
+                    this.updateData(data)
+                });
             return
         }
 
         const table = findInSlot(this, 'table');
         if (table) {
-            this.initFromTable(table)
+            const data = parseTable(table);
+            this.updateData(data)
         }
     }
 
-    public initFromData(data) {
-        this.init(data);
-    }
+    updateData(data: Array<any>) {
 
-    public initFromTable(table) {
-        const data = parseTable(table);
-        this.init(data);
-    }
-
-    public initFromAjax() {
-        fetch(this.ajax.url)
-            .then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                if (!isCollection(data)) {
-                    throw new Error('The dataset is not a uniform array of objects. You may need to pre-process the returned data and use the data property')
-                }
-                this.init(data)
-            });
-    }
-
-    init(data: Array<any>) {
         this.originalData = data.slice();
         this.headers = Object.keys(data[0]);
 
@@ -158,6 +166,13 @@ export default class DataTable extends LitElement {
         this.refreshData(data);
     }
 
+    filterCol(key: string, queryValue: any) {
+        const data = filterOnCol(this.getActiveData(), key, queryValue);
+        this.activeFilters = updateFilters(this.activeFilters, key, queryValue);
+
+        this.refreshData(data);
+    }
+
     getExportableData() {
         return this.getPaginatableData();
     }
@@ -173,13 +188,6 @@ export default class DataTable extends LitElement {
         return this.searchedData.length ? this.searchedData : this.originalData;
     }
 
-    filterCol(key: string, queryValue: any) {
-        const data = filterOnCol(this.getActiveData(), key, queryValue);
-        this.activeFilters = updateFilters(this.activeFilters, key, queryValue);
-
-        this.refreshData(data);
-    }
-
     reset() {
         clearInputsFromArray(this, ['input', 'select'], ['#per-page']);
         this.activeFilters = resetFilters(this.activeFilters);
@@ -188,7 +196,7 @@ export default class DataTable extends LitElement {
         this.refreshData(this.originalData)
     }
 
-    getTotalPages() {
+    getTotalPages(): number {
         return Math.ceil(this.getPaginatableData().length / this.paginatable.resultsPerPage);
     }
 
@@ -227,7 +235,7 @@ export default class DataTable extends LitElement {
         this.refreshData(this.getPaginatableData(), null, this.currentPage)
     }
 
-    gotoPage() {
+    protected gotoPage() {
         const pageInput: any = this.shadowRoot.querySelector('#go');
         this.changePage(Number(pageInput.value));
     }

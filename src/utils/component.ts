@@ -29,6 +29,19 @@ export const datasetToProps = (el: HTMLElement) => {
     }
 };
 
+export const mergeDefaults = (el: HTMLElement, mergeableProps: Array<string>) => {
+    mergeableProps.forEach((mergeableProp) => {
+        if (el[`${mergeableProp}Defaults`]) {
+            if (Array.isArray(el[mergeableProp])) {
+                el[mergeableProp] = [...el[`${mergeableProp}Defaults`], ...el[mergeableProp]]
+            } else {
+                el[mergeableProp] = {...el[`${mergeableProp}Defaults`], ...el[mergeableProp]}
+            }
+
+        }
+    })
+};
+
 const getSlotElements = (element): any => {
     return values(slotAssignedElements(getSlot(element)));
 };
