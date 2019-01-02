@@ -240,6 +240,16 @@ describe('DataTable', () => {
         })
     });
 
+    it('should order the data if the orderable prop is set', (done) => {
+        makeEmptyDataTable();
+        getDataTable().then((dataTable: DataTable) => {
+            dataTable.orderable = {column: 2, order: 'desc', enabled: true};
+            dataTable.init(sampleData.default);
+            expect(dataTable.data[0].balance).toBe(3867.74); //The highest in sample data.
+            done();
+        });
+    });
+
     it('should paginate on the searched and filtered data', (done) => {
         makeEmptyDataTable();
         getDataTable().then((dataTable: DataTable) => {

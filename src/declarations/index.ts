@@ -6,6 +6,11 @@ export interface ExtensionOpts {
     enabled: boolean
 }
 
+export interface OrderableOpts  extends ExtensionOpts{
+    column: number,
+    order:string
+}
+
 export interface ColOpts extends ExtensionOpts {
     colIndexes: any
 }

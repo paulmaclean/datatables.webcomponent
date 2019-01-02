@@ -8,6 +8,7 @@ export default class App extends LitElement {
         return html`
             <example-data-table
                 .data="${sampleData.default}"
+                .orderable="${ {column: 2, order: 'desc'} }"
                 .summable="${ {colIndexes: [2], formatter: (val, index) => { return currencyFormatter.format(val)}} }"
                 .filterable="${ {colIndexes: [5]} }"
                 .paginatable="${ {resultsPerPage: 5} }"
@@ -16,8 +17,6 @@ export default class App extends LitElement {
     }
 
 }
-
-
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',

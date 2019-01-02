@@ -1,6 +1,14 @@
 import {LitElement, html, property} from "@polymer/lit-element";
 import {parseTable} from "../utils/table";
-import {Filter, FilterableOpts, AjaxOpts, PaginateOpts, ExportableOpts, SummableOpts} from "../declarations";
+import {
+    Filter,
+    FilterableOpts,
+    AjaxOpts,
+    PaginateOpts,
+    ExportableOpts,
+    SummableOpts,
+    OrderableOpts
+} from "../declarations";
 import {
     applyAllFilters, filterOnCol, getPageSlice,
     getSortedFlags, getSummedCols, hasActiveFilter, resetFilters, searchData,
@@ -34,6 +42,15 @@ export default class DataTable extends LitElement {
 
     @property({type: Array})
     rows: Array<any> = [];
+
+    protected orderableDefaults: OrderableOpts = {
+        enabled: true,
+        column: 0,
+        order: 'asc',
+    };
+
+    @property({type: Object})
+    orderable: OrderableOpts = this.orderableDefaults;
 
     protected summableDefaults: SummableOpts = {
         enabled: true,
@@ -93,7 +110,7 @@ export default class DataTable extends LitElement {
 
     firstUpdated() {
         datasetToProps(this);
-        mergeDefaults(this, ['summable', 'filterable', 'paginatable', 'exportables', 'ajax']);
+        mergeDefaults(this, ['orderable', 'summable', 'filterable', 'paginatable', 'exportables', 'ajax']);
 
         this.init()
     }
@@ -135,8 +152,6 @@ export default class DataTable extends LitElement {
     }
 
     updateData(data: Array<any>) {
-
-        this.originalData = data.slice();
         this.headers = Object.keys(data[0]);
 
         this.sortedFlags = this.headers.map(() => {
@@ -147,8 +162,15 @@ export default class DataTable extends LitElement {
             return {key, value: ''};
         });
 
+        if(this.orderable.enabled) {
+            data = this.sortData(this.orderable.column, this.orderable.order, data);
+        }
+
+        this.originalData = data.slice();
+
         this.refreshData(data);
     }
+
 
     refreshData(data: Array<any>, applyFilters = false, currentPage = 1) {
         if (data[0] && !isEqual(Object.keys(data[0]), this.headers)) {
@@ -179,18 +201,27 @@ export default class DataTable extends LitElement {
     }
 
     sortCol(index: number, order = null) {
+        this.refreshData(this.sortData(index, order));
+    }
+
+    protected sortData(index: number, order = null, data?: Array<any>) {
+        if(!data) data = this.data;
         const key = this.headers[index];
         this.sortedFlags = getSortedFlags(this.sortedFlags, index, order);
-        const data = toggleSortOnCol(this.data, this.sortedFlags[index], key);
 
-        this.refreshData(data);
+        return toggleSortOnCol(data, this.sortedFlags[index], key);
     }
 
     filterCol(key: string, queryValue: any) {
-        const data = filterOnCol(this.getActiveData(), key, queryValue);
+        this.refreshData(this.filterData(key, queryValue));
+    }
+
+    protected filterData(key: string, queryValue: any, data?: Array<any>) {
+        if(!data) data = this.getActiveData();
+        data = filterOnCol(data, key, queryValue);
         this.activeFilters = updateFilters(this.activeFilters, key, queryValue);
 
-        this.refreshData(data);
+        return data;
     }
 
     getExportableData() {

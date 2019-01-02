@@ -3,7 +3,7 @@
     "description": "A web component built with lit element, inspired by jQuery datatables",
     "main": "./src/index.ts",
     "types": "./lib/index.d.ts",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "dependencies": {},
     "license": "MIT",
     "repository": {
