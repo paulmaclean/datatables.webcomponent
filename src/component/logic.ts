@@ -11,22 +11,26 @@ export const getSortedFlags = (flags: Array<number>, index: number, order = null
 };
 
 export const toggleFlag = (flags: Array<number>, index: number) => {
-    if (flags[index] < 1) {
-        flags[index] = 1;
-        return flags
-    }
-
-    flags[index] = 0;
-    return flags;
+    return flags.map((flag, i) => {
+        if(i === index) {
+            if(flag < 1) return 1;
+            return 0
+        }
+        return - 1
+    });
 };
 
 export const setFlagByOrder = (flags: Array<number>, index: number, order = 'desc') => {
-    if (order === 'desc') {
-        flags[index] = 1
-    } else {
-        flags[index] = 0
-    }
-    return flags;
+    return flags.map((flag, i) => {
+        if(i === index) {
+            if (order === 'desc') {
+                return 1
+            } else {
+                return 0
+            }
+        }
+        return - 1
+    });
 };
 
 export const toggleSortOnCol = (data: Array<any>, columnFlag: number, key: string) => {
@@ -52,6 +56,12 @@ export const filterOnCol = (data: Array<any>, key: string, queryVal: string) => 
 export const hasActiveFilter = (filters: Array<Filter>) => {
     return filters.find((item) => {
         return item.value !== null && item.value !== '';
+    })
+};
+
+export const isActiveFilter = (filters: Array<Filter>, key: string) => {
+    return filters.find((item) => {
+        return item.value !== null && item.value !== '' && item.key === key;
     })
 };
 

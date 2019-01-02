@@ -34,3 +34,16 @@
 table tfoot {
     border-top: 2px solid #cbcbcb;
 }
+
+.arrow {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    opacity: .3;
+}
+
+.arrow.active {
+    opacity: .7;
+}
+
+table thead th {
+    cursor: pointer;
+}

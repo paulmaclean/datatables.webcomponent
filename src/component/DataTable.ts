@@ -10,8 +10,8 @@ import {
     OrderableOpts
 } from "../declarations";
 import {
-    applyAllFilters, filterOnCol, getPageSlice,
-    getSortedFlags, getSummedCols, hasActiveFilter, resetFilters, searchData,
+    applyAllFilters, getPageSlice,
+    getSortedFlags, getSummedCols, hasActiveFilter, isActiveFilter, resetFilters, searchData,
     toggleSortOnCol, uniqueValuesInCol, updateFilters
 } from "./logic";
 import {collectionToValues, isCollection} from "../utils/array";
@@ -63,7 +63,7 @@ export default class DataTable extends LitElement {
     @property({type: Object})
     summable: SummableOpts = this.summableDefaults;
 
-    filterableDefaults : FilterableOpts = {
+    filterableDefaults: FilterableOpts = {
         enabled: true,
         colIndexes: []
     };
@@ -71,7 +71,7 @@ export default class DataTable extends LitElement {
     @property({type: Object})
     filterable: FilterableOpts = this.filterableDefaults;
 
-    paginatableDefaults : PaginateOpts = {
+    paginatableDefaults: PaginateOpts = {
         enabled: true,
         resultsPerPage: 10,
         perPageOptions: [5, 10, 20, 50, 100]
@@ -87,7 +87,7 @@ export default class DataTable extends LitElement {
     @property({type: Object})
     exportables: Array<ExportableOpts> = this.exportablesDefaults;
 
-    ajaxDefaults : AjaxOpts = {
+    ajaxDefaults: AjaxOpts = {
         url: ''
     };
 
@@ -105,7 +105,7 @@ export default class DataTable extends LitElement {
     protected summedCols: Array<any> = [];
 
     createRenderRoot() {
-        return DataTable.renderRoot === 'light-dom' ? this : this.attachShadow({ mode: 'open' });
+        return DataTable.renderRoot === 'light-dom' ? this : this.attachShadow({mode: 'open'});
     }
 
     firstUpdated() {
@@ -117,7 +117,7 @@ export default class DataTable extends LitElement {
 
     init(data?: Array<any>) {
 
-        if(data && data.length) {
+        if (data && data.length) {
             this.data = data;
         }
 
@@ -139,8 +139,8 @@ export default class DataTable extends LitElement {
                     this.loading = false;
                     this.updateData(data)
                 }).catch((err) => {
-                    this.loading = false;
-                });
+                this.loading = false;
+            });
             return
         }
 
@@ -162,7 +162,7 @@ export default class DataTable extends LitElement {
             return {key, value: ''};
         });
 
-        if(this.orderable.enabled) {
+        if (this.orderable.enabled) {
             data = this.sortData(this.orderable.column, this.orderable.order, data);
         }
 
@@ -201,11 +201,21 @@ export default class DataTable extends LitElement {
     }
 
     sortCol(index: number, order = null) {
-        this.refreshData(this.sortData(index, order));
+        let data;
+
+        if (this.searchedData.length) {
+            data = this.sortData(index, order, this.searchedData);
+            this.searchedData = data.slice();
+        } else {
+            data = this.sortData(index, order, this.originalData);
+            this.originalData = data.slice();
+        }
+
+        this.refreshData(data, true);
     }
 
     protected sortData(index: number, order = null, data?: Array<any>) {
-        if(!data) data = this.data;
+        if (!data) data = this.data;
         const key = this.headers[index];
         this.sortedFlags = getSortedFlags(this.sortedFlags, index, order);
 
@@ -217,26 +227,22 @@ export default class DataTable extends LitElement {
     }
 
     protected filterData(key: string, queryValue: any, data?: Array<any>) {
-        if(!data) data = this.getActiveData();
-        data = filterOnCol(data, key, queryValue);
         this.activeFilters = updateFilters(this.activeFilters, key, queryValue);
+        if (!data) {
+            return this.getActiveData();
+        } else {
+            return applyAllFilters(data, this.activeFilters);
+        }
+    }
+
+    getActiveData(): Array<any> {
+        let data = this.searchedData.length ? this.searchedData : this.originalData;
+
+        if (hasActiveFilter(this.activeFilters)) {
+            data = applyAllFilters(data, this.activeFilters)
+        }
 
         return data;
-    }
-
-    getExportableData() {
-        return this.getPaginatableData();
-    }
-
-    getActiveData() {
-        return this.searchedData.length ? this.searchedData : this.originalData;
-    }
-
-    protected getPaginatableData() {
-        if (hasActiveFilter(this.activeFilters)) {
-            return this.data;
-        }
-        return this.searchedData.length ? this.searchedData : this.originalData;
     }
 
     reset() {
@@ -248,11 +254,11 @@ export default class DataTable extends LitElement {
     }
 
     getTotalPages(): number {
-        return Math.ceil(this.getPaginatableData().length / this.paginatable.resultsPerPage);
+        return Math.ceil(this.getActiveData().length / this.paginatable.resultsPerPage);
     }
 
     getTotalItems() {
-        return this.getPaginatableData().length;
+        return this.getActiveData().length;
     }
 
     getTotalDataItems() {
@@ -283,7 +289,7 @@ export default class DataTable extends LitElement {
         }
         this.currentPage = pageNum;
 
-        this.refreshData(this.getPaginatableData(), null, this.currentPage)
+        this.refreshData(this.getActiveData(), null, this.currentPage)
     }
 
     protected gotoPage() {
@@ -299,11 +305,11 @@ export default class DataTable extends LitElement {
     export(exportable: ExportableOpts) {
         switch (exportable.type) {
             case 'csv':
-                const rows = collectionToValues(this.getExportableData());
+                const rows = collectionToValues(this.getActiveData());
                 rows.unshift(this.headers);
 
                 if (this.summable.enabled) {
-                    const sums = getSummedCols(this.getExportableData(), this.headers, this.summable.colIndexes);
+                    const sums = getSummedCols(this.getActiveData(), this.headers, this.summable.colIndexes);
                     rows.push(sums)
                 }
 
@@ -318,8 +324,12 @@ export default class DataTable extends LitElement {
             <slot style="display: none"></slot>
             <div class="container pure-form">
                 <div class="top-controls">
-                    <input id="search" placeholder="Search..." type="text" @keyup="${(ev: any) => {this.searchData(ev.path[0].value)}}">
-                    <button class="pure-button control-item" type="button" @click="${() => {this.reset()}}">Reset</button>
+                    <input id="search" placeholder="Search..." type="text" @keyup="${(ev: any) => {
+            this.searchData(ev.path[0].value)
+        }}">
+                    <button class="pure-button control-item" type="button" @click="${() => {
+            this.reset()
+        }}">Reset</button>
                     <div class="per-page-selector control-item">
                         ${this.perPageSelectorTemplate()}
                     </div>
@@ -327,7 +337,7 @@ export default class DataTable extends LitElement {
                         ${this.exportButtonsTemplate()}
                     </div>
                 </div>
-                ${this.loading ? html `<div class="loader">Loading...</div>` : ''}
+                ${this.loading ? html`<div class="loader">Loading...</div>` : ''}
                 ${this.tableTemplate()}
                 <div class="bottom-controls">
                     ${this.paginationTemplate()}
@@ -342,25 +352,42 @@ export default class DataTable extends LitElement {
                 <thead>
                     <tr>
                         ${this.headers.map((header, i) => {
-                            return html`<th @click="${() => {this.sortCol(i)}}">${header}</th>`})}                        
+            return html`<th @click="${() => {
+                this.sortCol(i)
+            }}">${header} ${this.sortArrow(i)}</th>`
+        })}                        
                     </tr>
                     ${this.filterTemplate()}
                 </thead>
                 <tbody>
                     ${this.rows.map((row) => {
-                        return this.rowTemplate(row)
-                    })}                        
+            return this.rowTemplate(row)
+        })}                        
                 </tbody>
                 ${this.footerTemplate()}
             </table>
         `
     }
 
+    protected sortArrow(i) {
+        switch (this.sortedFlags[i]) {
+            case 0:
+                return html`<span class="arrow active">&uarr;</span>`;
+            case 1:
+                return html`<span class="arrow active">&darr;</span>`;
+            default:
+                return html`<span class="arrow">&uarr;</span>`
+        }
+
+    }
+
     protected exportButtonsTemplate() {
         return html`
             ${this.exportables.map((exportItem) => {
             if (exportItem.enabled) {
-                return html`<button class="pure-button" @click="${() => { this.export(exportItem)}}" type="button">${exportItem.type}</button>`
+                return html`<button class="pure-button" @click="${() => {
+                    this.export(exportItem)
+                }}" type="button">${exportItem.type}</button>`
             }
         })}
         `
@@ -369,10 +396,12 @@ export default class DataTable extends LitElement {
     protected perPageSelectorTemplate() {
         if (this.paginatable.enabled) {
             return html`
-                <select id="per-page" @change="${(ev) => {this.setResultsPerPage(ev.path[0].value)}}">
+                <select id="per-page" @change="${(ev) => {
+                this.setResultsPerPage(ev.path[0].value)
+            }}">
                     ${this.paginatable.perPageOptions.map((option) => {
-                        return html`<option ?selected="${option === this.paginatable.resultsPerPage}" value="${option}">${option}</option>`
-                    })}
+                return html`<option ?selected="${option === this.paginatable.resultsPerPage}" value="${option}">${option}</option>`
+            })}
                 </select><span> results per page</span>`
         }
     }
@@ -381,8 +410,8 @@ export default class DataTable extends LitElement {
         return html`
             <tr>
                 ${row.map((cell) => {
-                    return html`<td>${cell}</td>`
-                })}
+            return html`<td>${cell}</td>`
+        })}
             </tr>
         `
     }
@@ -392,23 +421,27 @@ export default class DataTable extends LitElement {
             return html`
                 <tr>
                    ${this.headers.map((key, i) => {
-                        if (this.filterable.colIndexes.indexOf(i) !== -1) {
-                            return this.filterSelectTemplate(key);
-                        }
-                        return html`<td></td>`
-                    })}     
+                if (this.filterable.colIndexes.indexOf(i) !== -1) {
+                    return this.filterSelectTemplate(key);
+                }
+                return html`<td></td>`
+            })}     
                 </tr>`
         }
     }
 
     protected filterSelectTemplate(key) {
-        const options = uniqueValuesInCol(this.getActiveData(), key);
+        const options = uniqueValuesInCol(this.originalData, key);
 
         return html`
             <td>
-                <select @change="${(ev: any) => {this.filterCol(key, ev.path[0].value)}}">
+                <select @change="${(ev: any) => {
+            this.filterCol(key, ev.path[0].value)
+        }}">
                     <option value="">--${key}--</option>
-                    ${options.map((opt) => {return html`<option value="${opt}">${opt}</option>`})}
+                    ${options.map((opt) => {
+            return html`<option ?selected="${isActiveFilter(this.activeFilters, opt)}" value="${opt}">${opt}</option>`
+        })}
                 </select>
             </td>`
     }
@@ -418,8 +451,8 @@ export default class DataTable extends LitElement {
             return html`
                 <tfoot>
                     ${this.summedCols.map((sum) => {
-                        return html`<td>${sum}</td>`
-                    })}
+                return html`<td>${sum}</td>`
+            })}
                 </tfoot>
             `
         }
@@ -428,13 +461,23 @@ export default class DataTable extends LitElement {
     protected paginationTemplate() {
         if (this.paginatable.enabled) {
             return html`
-                <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {this.changePage(1)}}" type="button">First</button>
-                <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {this.prevPage()}}" type="button">&lt;&lt;Prev</button>
-                <button class="pure-button control-item" ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {this.nextPage()}}" type="button">Next&gt;&gt;</button>
-                <button class="pure-button control-item" ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {this.changePage(this.getTotalPages())}}" type="button">Last</button>
+                <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {
+                this.changePage(1)
+            }}" type="button">First</button>
+                <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {
+                this.prevPage()
+            }}" type="button">&lt;&lt;Prev</button>
+                <button class="pure-button control-item" ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {
+                this.nextPage()
+            }}" type="button">Next&gt;&gt;</button>
+                <button class="pure-button control-item" ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {
+                this.changePage(this.getTotalPages())
+            }}" type="button">Last</button>
                 <span class="control-item">Page ${this.currentPage} of ${this.getTotalPages()}</span>
                 <input id="go" class="control-item" type="number" min="1" max="${this.getTotalPages()}" value="${this.currentPage}">
-                <button class="pure-button control-item" @click="${() => {this.gotoPage()}}" type="button">Go</button>
+                <button class="pure-button control-item" @click="${() => {
+                this.gotoPage()
+            }}" type="button">Go</button>
                 <span class="showing control-item right">Showing ${this.getTotalDataItems()} of ${this.getTotalItems()}</span> 
             `
         }

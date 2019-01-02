@@ -163,17 +163,6 @@ describe('DataTable', () => {
         });
     });
 
-    describe('getExportableData', () => {
-        it('should return the data for export', (done) => {
-            makeEmptyDataTable();
-            getDataTable().then((dataTable: DataTable) => {
-                dataTable.init(sampleData.default);
-                expect(dataTable.getExportableData().length).toEqual(sampleData.default.length);
-                done();
-            });
-        });
-    });
-
     describe('reset', () => {
         let dataTable = null;
 
@@ -250,6 +239,17 @@ describe('DataTable', () => {
         });
     });
 
+    it('should paginate on the filtered data', (done) => {
+        makeEmptyDataTable();
+        getDataTable().then((dataTable: DataTable) => {
+            dataTable.init(sampleData.default);
+            dataTable.filterCol('gender', 'male');
+            dataTable.changePage(2);
+            expect(dataTable.currentPage).toBe(2);
+            done();
+        });
+    });
+
     it('should paginate on the searched and filtered data', (done) => {
         makeEmptyDataTable();
         getDataTable().then((dataTable: DataTable) => {
@@ -263,6 +263,18 @@ describe('DataTable', () => {
         });
     });
 
+    it('should paginate with sorted data', (done) => {
+        makeEmptyDataTable();
+        getDataTable().then((dataTable: DataTable) => {
+            dataTable.init(sampleData.default);
+            dataTable.sortCol(6);
+            dataTable.changePage(3);
+
+            expect(dataTable.data[dataTable.data.length -1].email).toBe('angelitamcfarland@cyclonica.com'); //First in sample data
+            done();
+        });
+    });
+
     it('should paginate after the results per page is set', (done) => {
         makeEmptyDataTable();
         getDataTable().then((dataTable: DataTable) => {
@@ -270,6 +282,18 @@ describe('DataTable', () => {
             dataTable.setResultsPerPage(5);
             dataTable.nextPage();
             expect(dataTable.data.length).toBe(5);
+            done();
+        });
+    });
+
+    it('should filter with sorted data', (done) => {
+        makeEmptyDataTable();
+        getDataTable().then((dataTable: DataTable) => {
+            dataTable.init(sampleData.default);
+            dataTable.filterCol('gender', 'male');
+            dataTable.sortCol(6);
+            dataTable.filterCol('gender', '');
+            expect(dataTable.getTotalItems()).toBe(30);
             done();
         });
     });

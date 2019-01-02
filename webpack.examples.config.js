@@ -4,12 +4,12 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
     entry:
         {
-            "../examples/dist/index": "./examples/index.ts",
+            // "../examples/dist/index": "./examples/index.ts",
             "../examples/app/dist/index": "./examples/app/index.ts",
-            "../examples/styling/overrides/dist/index": "./examples/styling/overrides/index.ts",
-            "../examples/styling/variables/dist/index": "./examples/styling/variables/index.ts",
-            "../examples/styling/theme/dist/index": "./examples/styling/theme/index.ts",
-            "../examples/light-dom/dist/index": "./examples/light-dom/index.ts",
+            // "../examples/styling/overrides/dist/index": "./examples/styling/overrides/index.ts",
+            // "../examples/styling/variables/dist/index": "./examples/styling/variables/index.ts",
+            // "../examples/styling/theme/dist/index": "./examples/styling/theme/index.ts",
+            // "../examples/light-dom/dist/index": "./examples/light-dom/index.ts",
         },
 
     mode: 'production',
