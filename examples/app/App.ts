@@ -11,7 +11,6 @@ export default class App extends LitElement {
                 .summable="${ {colIndexes: [2], formatter: (val, index) => { return currencyFormatter.format(val)}} }"
                 .filterable="${ {colIndexes: [5]} }"
                 .paginatable="${ {resultsPerPage: 5} }"
-                .exportables="${ {resultsPerPage: 5} }"
                 >
             </example-data-table>`
     }

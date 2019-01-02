@@ -68,6 +68,9 @@ export default class DataTable extends LitElement {
     @property({type: Object})
     ajax: AjaxOpts = this.ajaxDefaults;
 
+    @property({type: Boolean})
+    loading = false;
+
     public currentPage: number = 1;
     protected originalData: Array<any> = [];
     protected searchedData: Array<any> = [];
@@ -84,6 +87,7 @@ export default class DataTable extends LitElement {
     }
 
     init(data?: Array<any>) {
+
         if(data && data.length) {
             this.data = data;
         }
@@ -94,6 +98,7 @@ export default class DataTable extends LitElement {
         }
 
         if (this.ajax.url) {
+            this.loading = true;
             fetch(this.ajax.url)
                 .then((response) => {
                     return response.json()
@@ -102,7 +107,10 @@ export default class DataTable extends LitElement {
                     if (!isCollection(data)) {
                         throw new Error('The dataset is not a uniform array of objects. You may need to pre-process the returned data and use the data property')
                     }
+                    this.loading = false;
                     this.updateData(data)
+                }).catch((err) => {
+                    this.loading = false;
                 });
             return
         }
@@ -268,6 +276,7 @@ export default class DataTable extends LitElement {
             <button type="button" @click="${() => {this.reset()}}">Reset</button>
             ${this.perPageSelectorTemplate()}
             ${this.exportButtonsTemplate()}
+            ${this.loading ? html `<div class="loader">Loading...</div>` : ''}
             ${this.tableTemplate()}
             ${this.paginationTemplate()}
         `
