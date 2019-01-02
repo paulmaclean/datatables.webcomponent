@@ -1,0 +1,18 @@
+table, input, select {
+    background-color: lavender;
+}
+
+.pure-form select {
+    background-color: lavender;
+    color: #000;
+}
+
+.pure-button {
+    background-color: mediumorchid;
+    color: #fff;
+}
+
+.pure-table thead {
+    background-color: mediumpurple;
+    color: #fff;
+}

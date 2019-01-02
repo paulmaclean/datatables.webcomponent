@@ -9,13 +9,20 @@ import {
 import {collectionToValues, isCollection} from "../utils/array";
 import {isEqual} from "lodash";
 import {exportCsv, makeExportableCsv} from "../utils/export";
-
 import {clearInputsFromArray} from "../utils/dom";
 import {datasetToProps, findInSlot, mergeDefaults} from "../utils/component";
+import pureCss from "./pure-min.css"
+import style from "./style.css"
 
 export default class DataTable extends LitElement {
 
     public static componentName = 'data-table';
+
+    @property({type: String})
+    theme = pureCss + style;
+
+    @property({type: String})
+    styleOverrides = '';
 
     @property({type: Object})
     data: Array<any> = [];
@@ -271,20 +278,31 @@ export default class DataTable extends LitElement {
 
     render() {
         return html`
+            <style>${this.theme + this.styleOverrides}</style>
             <slot style="display: none"></slot>
-            <input id="search" type="text" @keyup="${(ev: any) => {this.searchData(ev.path[0].value)}}">
-            <button type="button" @click="${() => {this.reset()}}">Reset</button>
-            ${this.perPageSelectorTemplate()}
-            ${this.exportButtonsTemplate()}
-            ${this.loading ? html `<div class="loader">Loading...</div>` : ''}
-            ${this.tableTemplate()}
-            ${this.paginationTemplate()}
+            <div class="container pure-form">
+                <div class="top-controls">
+                    <input id="search" placeholder="Search..." type="text" @keyup="${(ev: any) => {this.searchData(ev.path[0].value)}}">
+                    <button class="pure-button control-item" type="button" @click="${() => {this.reset()}}">Reset</button>
+                    <div class="per-page-selector control-item">
+                        ${this.perPageSelectorTemplate()}
+                    </div>
+                    <div class="export-buttons control-item right">
+                        ${this.exportButtonsTemplate()}
+                    </div>
+                </div>
+                ${this.loading ? html `<div class="loader">Loading...</div>` : ''}
+                ${this.tableTemplate()}
+                <div class="bottom-controls">
+                    ${this.paginationTemplate()}
+                </div>
+            </div>
         `
     }
 
     protected tableTemplate() {
         return html`
-            <table>
+            <table class="pure-table pure-table-bordered">
                 <thead>
                     <tr>
                         ${this.headers.map((header, i) => {
@@ -306,7 +324,7 @@ export default class DataTable extends LitElement {
         return html`
             ${this.exportables.map((exportItem) => {
             if (exportItem.enabled) {
-                return html`<button @click="${() => { this.export(exportItem)}}" type="button">${exportItem.type}</button>`
+                return html`<button class="pure-button" @click="${() => { this.export(exportItem)}}" type="button">${exportItem.type}</button>`
             }
         })}
         `
@@ -374,14 +392,14 @@ export default class DataTable extends LitElement {
     protected paginationTemplate() {
         if (this.paginatable.enabled) {
             return html`
-                <button ?disabled="${this.currentPage <= 1}" @click="${() => {this.changePage(1)}}" type="button">First</button>
-                <button ?disabled="${this.currentPage <= 1}" @click="${() => {this.prevPage()}}" type="button">&lt;&lt;Prev</button>
-                <button ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {this.nextPage()}}" type="button">Next&gt;&gt;</button>
-                <button ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {this.changePage(this.getTotalPages())}}" type="button">Last</button>
-                <span>Page ${this.currentPage} of ${this.getTotalPages()}</span>
-                <input id="go" type="number" min="1" max="${this.getTotalPages()}" value="${this.currentPage}">
-                <button @click="${() => {this.gotoPage()}}" type="button">Go</button>
-               <span>Showing ${this.getTotalDataItems()} of ${this.getTotalItems()}</span> 
+                <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {this.changePage(1)}}" type="button">First</button>
+                <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {this.prevPage()}}" type="button">&lt;&lt;Prev</button>
+                <button class="pure-button control-item" ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {this.nextPage()}}" type="button">Next&gt;&gt;</button>
+                <button class="pure-button control-item" ?disabled="${this.currentPage >= this.getTotalPages()}" @click="${() => {this.changePage(this.getTotalPages())}}" type="button">Last</button>
+                <span class="control-item">Page ${this.currentPage} of ${this.getTotalPages()}</span>
+                <input id="go" class="control-item" type="number" min="1" max="${this.getTotalPages()}" value="${this.currentPage}">
+                <button class="pure-button control-item" @click="${() => {this.gotoPage()}}" type="button">Go</button>
+                <span class="showing control-item right">Showing ${this.getTotalDataItems()} of ${this.getTotalItems()}</span> 
             `
         }
     }
