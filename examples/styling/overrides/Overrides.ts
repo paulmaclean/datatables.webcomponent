@@ -10,17 +10,9 @@ export default class Overrides extends LitElement {
             <example-data-table
                 .styleOverrides="${overrides}"
                 .data="${sampleData.default}"
-                .summable="${ {colIndexes: [2], formatter: (val, index) => { return currencyFormatter.format(val)}} }"
+                .summable="${ {colIndexes: [2]} }"
                 .filterable="${ {colIndexes: [5]} }"
                 >
             </example-data-table>`
     }
 }
-
-
-
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-});

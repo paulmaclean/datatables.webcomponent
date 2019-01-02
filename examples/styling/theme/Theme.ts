@@ -10,15 +10,9 @@ export default class Theme extends LitElement {
             <example-data-table
                 .theme="${theme}"
                 .data="${sampleData.default}"
-                .summable="${ {colIndexes: [2], formatter: (val, index) => { return currencyFormatter.format(val)}} }"
+                .summable="${ {colIndexes: [2]} }"
                 .filterable="${ {colIndexes: [5]} }"
                 >
             </example-data-table>`
     }
 }
-
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-});
