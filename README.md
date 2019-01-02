@@ -19,6 +19,9 @@ A lightweight webcomponent for creating datatables. Inspired by jQuery Datatable
 * [css overrides](https://github.com/paulmaclean/datatables.webcomponent/wiki/css-overrides)
 * [new themes](https://github.com/paulmaclean/datatables.webcomponent/wiki/new-themes)
 
+#### LightDom Examples
+* [lit-element](https://github.com/paulmaclean/datatables.webcomponent/wiki/LightDom-Lit-Element)
+* [standalone](https://github.com/paulmaclean/datatables.webcomponent/wiki/LightDom-Standalone)
 
 ## Install
 
