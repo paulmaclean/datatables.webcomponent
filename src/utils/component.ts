@@ -33,7 +33,9 @@ export const mergeDefaults = (el: HTMLElement, mergeableProps: Array<string>) =>
     mergeableProps.forEach((mergeableProp) => {
         if (el[`${mergeableProp}Defaults`]) {
             if (Array.isArray(el[mergeableProp])) {
-                el[mergeableProp] = [...el[`${mergeableProp}Defaults`], ...el[mergeableProp]]
+                el[mergeableProp] = el[`${mergeableProp}Defaults`].map((item, i) => {
+                    return {...item, ...el[mergeableProp][i]}
+                });
             } else {
                 el[mergeableProp] = {...el[`${mergeableProp}Defaults`], ...el[mergeableProp]}
             }

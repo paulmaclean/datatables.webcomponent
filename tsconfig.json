@@ -3,8 +3,8 @@
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
         "allowUnreachableCode": true,
-//        "declaration": true,
-//        "declarationDir": "./lib",
+        "declaration": true,
+        "declarationDir": "./lib",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "lib": [
