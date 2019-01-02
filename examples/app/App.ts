@@ -10,7 +10,7 @@ export default class App extends LitElement {
                 .data="${sampleData.default}"
                 .orderable="${ {column: 2, order: 'desc'} }"
                 .summable="${ {colIndexes: [2], formatter: (val, index) => { return currencyFormatter.format(val)}} }"
-                .filterable="${ {colIndexes: [5]} }"
+                .filterable="${ {colIndexes: [4, 5]} }"
                 .paginatable="${ {resultsPerPage: 5} }"
                 >
             </example-data-table>`

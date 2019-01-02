@@ -417,7 +417,7 @@ export default class DataTable extends LitElement {
     }
 
     protected filterTemplate() {
-        if (this.filterable.enabled) {
+        if (this.filterable.enabled && this.filterable.colIndexes.length) {
             return html`
                 <tr>
                    ${this.headers.map((key, i) => {

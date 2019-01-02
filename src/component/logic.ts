@@ -1,6 +1,6 @@
 import {sortBy, reverse, sumBy, uniqBy, map, slice} from "lodash";
 import {Filter} from "../declarations";
-import {isString} from "../utils/object";
+import {isNumeric, isString} from "../utils/object";
 
 export const getSortedFlags = (flags: Array<number>, index: number, order = null) => {
     if (order) {
@@ -12,24 +12,24 @@ export const getSortedFlags = (flags: Array<number>, index: number, order = null
 
 export const toggleFlag = (flags: Array<number>, index: number) => {
     return flags.map((flag, i) => {
-        if(i === index) {
-            if(flag < 1) return 1;
+        if (i === index) {
+            if (flag < 1) return 1;
             return 0
         }
-        return - 1
+        return -1
     });
 };
 
 export const setFlagByOrder = (flags: Array<number>, index: number, order = 'desc') => {
     return flags.map((flag, i) => {
-        if(i === index) {
+        if (i === index) {
             if (order === 'desc') {
                 return 1
             } else {
                 return 0
             }
         }
-        return - 1
+        return -1
     });
 };
 
@@ -75,7 +75,7 @@ export const uniqueValuesInCol = (data: Array<any>, key: string) => {
     return map(uniqBy(data, key), key);
 };
 
-export const searchData = (data: Array<any>, queryVal: string) => {
+export const searchData = (data: Array<any>, queryVal: any) => {
     if (!queryVal) return data;
     const results = [];
     data.forEach((row) => {
@@ -98,6 +98,15 @@ export const searchData = (data: Array<any>, queryVal: string) => {
                     if (rowVal.indexOf(queryVal) !== -1) {
                         results.push(row);
                         break
+                    }
+                } else {
+                    if (isNumeric(queryVal)) {
+                        const rowValS = rowVal.toString();
+                        const queryValS = queryVal.toString();
+                        if (rowValS.indexOf(queryValS) !== -1) {
+                            results.push(row);
+                            break
+                        }
                     }
                 }
             }

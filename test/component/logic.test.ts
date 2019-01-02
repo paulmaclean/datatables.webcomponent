@@ -95,6 +95,12 @@ describe('logic', () => {
             expect(searchData(data, '').length).toBe(3);
         });
 
+        it('should search for a numeric val for a substring of that numeric value', () => {
+            const data = [{'key1': '123456', 'key2': 'bAR'}, {'key1': '67123', 'key2': 'bAr'}, {'key1': '00012', 'key2': 'b'}];
+
+            expect(searchData(data, 123).length).toBe(2);
+        });
+
     });
 
     describe('applyAllFilters', () => {
