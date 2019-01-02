@@ -88,7 +88,7 @@ export default class DataTable extends LitElement {
     protected summedCols: Array<any> = [];
 
     createRenderRoot() {
-        return DataTable.renderRoot === 'light-dom' ? this : this.shadowRoot;
+        return DataTable.renderRoot === 'light-dom' ? this : this.attachShadow({ mode: 'open' });
     }
 
     firstUpdated() {
