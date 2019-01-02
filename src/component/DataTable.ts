@@ -18,6 +18,8 @@ export default class DataTable extends LitElement {
 
     public static componentName = 'data-table';
 
+    public static renderRoot = 'shadow';
+
     @property({type: String})
     theme = pureCss + style;
 
@@ -85,6 +87,9 @@ export default class DataTable extends LitElement {
     protected activeFilters: Array<Filter> = [];
     protected summedCols: Array<any> = [];
 
+    createRenderRoot() {
+        return DataTable.renderRoot === 'light-dom' ? this : this.shadowRoot;
+    }
 
     firstUpdated() {
         datasetToProps(this);

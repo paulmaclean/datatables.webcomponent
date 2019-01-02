@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax Example</title>
+</head>
+<body>
+    <h2>Example Usage using Light Dom</h2>
+    <style>
+        table, input, select {
+            background-color: lavender;
+        }
+
+        example-data-table .pure-form select {
+            background-color: lavender;
+            color: #000;
+        }
+
+        example-data-table .pure-button {
+            background-color: mediumorchid;
+            color: #fff;
+        }
+
+        example-data-table .pure-table thead {
+            background-color: mediumpurple;
+            color: #fff;
+        }
+    </style>
+    <example-data-table
+        data-ajax='{"url": "https://unpkg.com/@p_mac/datatables.webcomponent/test/support/data/generated.json"}'
+        data-filterable='{"colIndexes":[5]}'
+        data-summable='{"colIndexes":[2]}'
+    >
+    </example-data-table>
+    <script src="./dist/index.js"></script>
+</body>
+</html>

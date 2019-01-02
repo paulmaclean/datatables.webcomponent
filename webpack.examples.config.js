@@ -9,6 +9,7 @@ module.exports = {
             "../examples/styling/overrides/dist/index": "./examples/styling/overrides/index.ts",
             "../examples/styling/variables/dist/index": "./examples/styling/variables/index.ts",
             "../examples/styling/theme/dist/index": "./examples/styling/theme/index.ts",
+            "../examples/light-dom/dist/index": "./examples/light-dom/index.ts",
         },
 
     mode: 'production',

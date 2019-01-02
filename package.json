@@ -3,7 +3,7 @@
     "description": "A web component built with lit element, inspired by jQuery datatables",
     "main": "./src/index.ts",
     "types": "./lib/index.d.ts",
-    "version": "0.1.6",
+    "version": "0.2.6",
     "dependencies": {},
     "license": "MIT",
     "repository": {
@@ -12,9 +12,10 @@
     },
     "scripts": {
         "test": "karma start",
-        "prepublish": "webpack && webpack --config webpack.examples.config.js",
-        "build": "webpack && webpack --config webpack.examples.config.js",
-        "build-standalone": "webpack --config webpack.standalone.config.js",
+        "prepublish": "npm run build",
+        "build": "npm run build-standalone & npm run build-standalone-ld & npm run build-examples",
+        "build-standalone": "webpack",
+        "build-standalone-ld": "webpack --config webpack.ld.config.js",
         "build-examples": "webpack --config webpack.examples.config.js",
         "watch-examples": "webpack --config webpack.examples.config.js --watch"
     },
@@ -42,6 +43,7 @@
         "uglifyjs-webpack-plugin": "^2.1.1",
         "webpack": "^4.28.3",
         "webpack-bundle-analyzer": "^3.0.3",
-        "webpack-cli": "^3.1.2"
+        "webpack-cli": "^3.1.2",
+        "webpack-merge": "^4.1.5"
     }
 }
