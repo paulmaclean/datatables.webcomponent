@@ -6,16 +6,24 @@ export interface ExtensionOpts {
     enabled: boolean
 }
 
-export interface OrderableOpts  extends ExtensionOpts{
+export interface OrderableOpts extends ExtensionOpts {
     column: number,
-    order:string
+    order: string
 }
 
 export interface ColOpts extends ExtensionOpts {
-    colIndexes: any
+    colIndexes: Array<number>
 }
 
 export interface FilterableOpts extends ColOpts {
+
+}
+
+export interface SortableOpts extends ExtensionOpts {
+    exceptCols: Array<any>
+}
+
+export interface RenderableOpts extends ColOpts {
 
 }
 

@@ -7,7 +7,7 @@ import {
     PaginateOpts,
     ExportableOpts,
     SummableOpts,
-    OrderableOpts
+    OrderableOpts, RenderableOpts, SortableOpts
 } from "../declarations";
 import {
     applyAllFilters, getPageSlice,
@@ -21,6 +21,7 @@ import {clearInputsFromArray} from "../utils/dom";
 import {datasetToProps, findInSlot, mergeDefaults} from "../utils/component";
 import pureCss from "./pure-min.css"
 import style from "./style.css"
+import {htmlStringToElement} from "../utils/html";
 
 export default class DataTable extends LitElement {
 
@@ -80,6 +81,23 @@ export default class DataTable extends LitElement {
     @property({type: Object})
     paginatable: PaginateOpts = this.paginatableDefaults;
 
+    renderableDefaults: RenderableOpts = {
+        enabled: true,
+        colIndexes: []
+    };
+
+    @property({type: Object})
+    renderable: RenderableOpts = this.renderableDefaults;
+
+    sortableDefaults: SortableOpts = {
+        enabled: true,
+        exceptCols: []
+    };
+
+    @property({type: Object})
+    sortable: SortableOpts = this.sortableDefaults;
+
+
     exportablesDefaults: Array<ExportableOpts> = [
         {'type': 'csv', 'enabled': true, filename: 'export.csv'}
     ];
@@ -110,7 +128,7 @@ export default class DataTable extends LitElement {
 
     firstUpdated() {
         datasetToProps(this);
-        mergeDefaults(this, ['orderable', 'summable', 'filterable', 'paginatable', 'exportables', 'ajax']);
+        mergeDefaults(this, ['orderable', 'summable', 'filterable', 'paginatable', 'renderable', 'sortable', 'exportables', 'ajax']);
 
         this.init()
     }
@@ -352,10 +370,12 @@ export default class DataTable extends LitElement {
                 <thead>
                     <tr>
                         ${this.headers.map((header, i) => {
-            return html`<th @click="${() => {
-                this.sortCol(i)
-            }}">${header} ${this.sortArrow(i)}</th>`
-        })}                        
+                            if(this.sortable.enabled && this.sortable.exceptCols.indexOf(i) !== -1) {
+                                return html `<th>${header}</th>`
+                            } else {
+                                return html`<th @click="${() => { this.sortCol(i)}}">${header} ${this.sortArrow(i)}</th>`    
+                            }
+                        })}                        
                     </tr>
                     ${this.filterTemplate()}
                 </thead>
@@ -409,9 +429,13 @@ export default class DataTable extends LitElement {
     protected rowTemplate(row) {
         return html`
             <tr>
-                ${row.map((cell) => {
-            return html`<td>${cell}</td>`
-        })}
+                ${row.map((cell,i) => {
+                    if(this.renderable.enabled && this.renderable.colIndexes.indexOf(i) !== -1) {
+                        return html`<td>${htmlStringToElement(cell)}</td>`            
+                    } else {
+                        return html`<td>${cell}</td>`
+                    }
+                })}
             </tr>
         `
     }
