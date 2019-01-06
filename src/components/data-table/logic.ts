@@ -1,6 +1,6 @@
 import {sortBy, reverse, sumBy, uniqBy, map, slice} from "lodash";
-import {Filter} from "../declarations";
-import {isNumeric, isString} from "../utils/object";
+import {Filter} from "../../declarations";
+import {isNumeric, isString} from "../../utils/object";
 
 export const getSortedFlags = (flags: Array<number>, index: number, order = null) => {
     if (order) {

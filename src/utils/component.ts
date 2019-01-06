@@ -1,8 +1,11 @@
 import {isElement, isObject, tryParse} from "./object";
 import {values} from "lodash";
 
-export const defineComponent = (tagName: string, constructor: Function, namespace = 'app') => {
-    tagName = `${namespace}-${tagName}`;
+export const defineComponent = (tagName: string, constructor: Function, namespace?:string) => {
+    if(namespace) {
+        tagName = `${namespace}-${tagName}`;
+    }
+
     if (!customElements.get(tagName)) customElements.define(tagName, constructor);
     return customElements.get(tagName);
 };
