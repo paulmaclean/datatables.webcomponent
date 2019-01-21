@@ -1,11 +1,22 @@
-export const makeExportableCsv = (rows: Array<any>) => {
+export const makeExportableCsvContent = (rows: Array<any>) => {
     let csvContent = "";
+
     rows.forEach(function(rowArray){
-        let row = rowArray.join(",");
+        let rowItems = rowArray.map((item) => {
+           if(item.indexOf(',') !==-1) {
+               item = item.replace(',', ' ')
+           }
+           return item
+        });
+        let row = rowItems.join(",");
         csvContent += row + "\r\n";
     });
 
-    return new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    return csvContent
+};
+
+export const makeExportableCsv = (rows: Array<any>) => {
+    return new Blob([makeExportableCsvContent(rows)], { type: 'text/csv;charset=utf-8;' });
 };
 
 export const exportCsv = (csvBlob: Blob, filename:string) => {
