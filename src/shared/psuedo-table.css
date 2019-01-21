@@ -1,0 +1,6 @@
+.table { display: table; }
+.table-tr { display: table-row; }
+.table-thead { display: table-header-group; }
+.table-tbody { display: table-row-group; }
+.table-tfoot { display: table-footer-group; }
+.table-th, .table-td { display: table-cell; }

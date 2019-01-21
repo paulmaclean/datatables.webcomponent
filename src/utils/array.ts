@@ -2,6 +2,7 @@ import {values, isEqual} from "lodash";
 import {isObject} from "./object";
 
 export const collectionToValues = (collection) => {
+    if(!collection || !collection.length) return [];
     return collection.map((item) => {
         return values(item);
     });
@@ -20,4 +21,12 @@ export const isCollection = (data) => {
     }
 
     return true;
+};
+
+export const flatten = (arr) => {
+    const flat = [];
+    Object.keys(arr).forEach(key => {
+        flat.push(arr[key])
+    });
+    return flat;
 };

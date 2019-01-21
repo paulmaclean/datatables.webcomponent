@@ -1,5 +1,6 @@
 import {isElement, isObject, tryParse} from "./object";
 import {values} from "lodash";
+import {flatten} from "./array";
 
 export const defineComponent = (tagName: string, constructor: Function, namespace?:string) => {
     if(namespace) {
@@ -15,6 +16,32 @@ export const findInSlot = (element, selector): any => {
         return element.matches(selector);
     });
     return found[0];
+};
+
+export const findInNamedSlot = (element, slotName, selector): any => {
+    const found = getSlotElementsByName(element, slotName).filter((element) => {
+        console.log(element)
+        return element.matches(selector);
+    });
+    return found[0];
+};
+
+export const findInNamedSlotDeep = (element, slotName, selector): any => {
+    const found = getSlotElementsByName(element, slotName).map((element) => {
+        const root = element.shadowRoot || element;
+        return root.querySelectorAll(selector);
+    });
+    return flatten(found);
+};
+
+export const getSlotElementsByName = (element, name) => {
+    const slot = getSlotByName(element, name);
+    return flatten(slotAssignedElements(slot));
+};
+
+export const getSlotByName = (element, name) => {
+    const root = element.shadowRoot || element;
+    return root.querySelector(`slot[name=${name}]`)
 };
 
 export const datasetToProps = (el: HTMLElement) => {

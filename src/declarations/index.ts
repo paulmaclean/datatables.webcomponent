@@ -1,5 +1,20 @@
+export interface AppState {
+    data: Data
+    pagination: PaginateOpts
+}
+
+export interface Data {
+    original: Array<any>,
+    active: Array<any>
+}
+
 export interface KeyMap {
     [key: string]: any
+}
+
+export interface ReducerMap {
+    key: string
+    reducer: Function
 }
 
 export interface ExtensionOpts {
@@ -15,8 +30,9 @@ export interface ColOpts extends ExtensionOpts {
     colIndexes: Array<number>
 }
 
-export interface FilterableOpts extends ColOpts {
-
+export interface FilterableOpts {
+    colsToFilter: Array<string>,
+    activeFilters: Array<number>
 }
 
 export interface SortableOpts extends ExtensionOpts {
@@ -31,7 +47,8 @@ export interface SummableOpts extends ColOpts {
     formatter?: Function
 }
 
-export interface PaginateOpts extends ExtensionOpts {
+export interface PaginateOpts extends ExtensionOpts{
+    currentPage: number
     resultsPerPage: number
     perPageOptions: Array<number>
 }

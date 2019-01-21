@@ -1,14 +1,10 @@
-import {defineComponent, DataTable, Pagination, Search} from "../../src";
+import {initSortableHeaders} from "../../src/extensions/sortable-headers";
+import {initDataTable} from "../../src/components/containers/data-table";
+import {defineComponent} from "../../src";
 import App from "./App";
-import PerPageSelector from "../../src/components/per-page-selector/PerPageSelector";
-import ExportButtons from "../../src/components/export-buttons/ExportButtons";
-import Table from "../../src/components/table/Table";
+import {initColumnFilters} from "../../src/extensions/column-filters";
 
-defineComponent(DataTable.componentName, DataTable, 'example');
-defineComponent(Pagination.componentName, Pagination, 'data-table');
-defineComponent(Search.componentName, Search, 'data-table');
-defineComponent(PerPageSelector.componentName, PerPageSelector, 'data-table');
-defineComponent(ExportButtons.componentName, ExportButtons, 'data-table');
-defineComponent(Table.componentName, Table, 'data-table');
+initSortableHeaders('example');
+initColumnFilters('example');
+initDataTable('example');
 defineComponent(App.componentName, App, 'example');
-

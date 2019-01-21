@@ -6,20 +6,18 @@ export default class App extends LitElement {
 
     render() {
         return html`
-            <example-data-table
-                .data="${sampleData.default}"
-                .orderable="${ {column: 2, order: 'desc'} }"
-                .summable="${ {colIndexes: [2], formatter: (val, index) => { return currencyFormatter.format(val)}} }"
-                .filterable="${ {colIndexes: [4, 5]} }"
-                .paginatable="${ {resultsPerPage: 5} }"
-                >
+            <example-data-table .data="${sampleData.default}">
+                <example-table slot="middle">
+                    <example-sortable-headers slot="table-headers"></example-sortable-headers>
+                    <example-column-filters slot="extra-table-headers" .colsToFilter="${[4,5]}"></example-column-filters>
+                </example-table>
+                <example-pagination-controls slot="bottom"></example-pagination-controls>
             </example-data-table>`
     }
-
 }
 
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-});
+// const currencyFormatter = new Intl.NumberFormat('en-US', {
+//     style: 'currency',
+//     currency: 'USD',
+//     minimumFractionDigits: 2
+// });

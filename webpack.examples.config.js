@@ -4,6 +4,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
     entry:
         {
+            //"../examples/inner-components/sort/dist/index": "./examples/inner-components/sort/index.ts",
             //"../examples/dist/index": "./examples/index.ts",
             "../examples/app/dist/index": "./examples/app/index.ts",
             // "../examples/renderable/dist/index": "./examples/renderable/index.ts",

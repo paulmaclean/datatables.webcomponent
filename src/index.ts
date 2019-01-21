@@ -1,7 +1,6 @@
 import {defineComponent} from "./utils/component";
-import DataTable from "./components/data-table/DataTable";
-import Pagination from "./components/pagination/Pagination";
-import Search from "./components/search/Search";
+import DataTable from "./components/containers/data-table/DataTable";
 
-export {defineComponent, DataTable, Pagination, Search}
+export {defineComponent, DataTable}
 export {FilterableOpts, SummableOpts, ExportableOpts, PaginateOpts, AjaxOpts} from "./declarations"
+
