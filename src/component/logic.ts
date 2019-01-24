@@ -49,6 +49,9 @@ export const filterOnCol = (data: Array<any>, key: string, queryVal: string) => 
     }
 
     return data.filter((item) => {
+        if (isString(item[key])) {
+            return item[key].toLowerCase() == queryVal.toLowerCase();
+        }
         return item[key] == queryVal;
     });
 };
@@ -72,7 +75,20 @@ export const sumOnCol = (data: Array<any>, key: string) => {
 };
 
 export const uniqueValuesInCol = (data: Array<any>, key: string) => {
-    return map(uniqBy(data, key), key);
+    const vals = map(uniqBy(data, key), key);
+    return uniqueIgnoreCase(vals);
+};
+
+const uniqueIgnoreCase = (arr) => {
+    const b = {};
+    for (let i = 0; i < arr.length; i++) {
+        b[arr[i].toUpperCase()] = arr[i].toLowerCase();
+    }
+    const c = [];
+    for (const key in b) {
+        c.push(b[key]);
+    }
+    return c;
 };
 
 export const searchData = (data: Array<any>, queryVal: any) => {

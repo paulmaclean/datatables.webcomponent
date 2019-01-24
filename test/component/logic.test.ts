@@ -61,6 +61,12 @@ describe('logic', () => {
             expect(filterOnCol(data, 'x', 'b')).toEqual([{'x': 'b', 'y': '2'}, {'x': 'b', 'y': '3'}]);
         });
 
+        it('should filter on a key by value, ignoring case', () => {
+            const data = [{'x': 'B', 'y': '2'}, {'x': 'a', 'y': '3'}, {'x': 'b', 'y': '3'}];
+
+            expect(filterOnCol(data, 'x', 'b')).toEqual([{'x': 'B', 'y': '2'}, {'x': 'b', 'y': '3'}]);
+        });
+
         it('should return the full dataset if query val is empty', () => {
             const data = [{'x': 'b', 'y': '2'}, {'x': 'a', 'y': '3'}, {'x': 'b', 'y': '3'}];
 
@@ -80,6 +86,12 @@ describe('logic', () => {
     describe('uniqueValuesInCol', () => {
         it('should find all the unique values in a col', () => {
             const data = [{'x': 'b', 'y': '2'}, {'x': 'a', 'y': '3'}, {'x': 'b', 'y': '3'}];
+
+            expect(uniqueValuesInCol(data, 'x')).toEqual(['b', 'a']);
+        });
+
+        it('should find all the unique values, ignoring case', () => {
+            const data = [{'x': 'B', 'y': '2'}, {'x': 'a', 'y': '3'}, {'x': 'b', 'y': '3'}];
 
             expect(uniqueValuesInCol(data, 'x')).toEqual(['b', 'a']);
         });
