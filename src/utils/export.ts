@@ -1,12 +1,16 @@
+import {isString} from "./object";
+
+
 export const makeExportableCsvContent = (rows: Array<any>) => {
     let csvContent = "";
 
-    rows.forEach(function(rowArray){
+    rows.forEach(function (rowArray) {
         let rowItems = rowArray.map((item) => {
-           if(item.indexOf(',') !==-1) {
-               item = item.replace(',', ' ')
-           }
-           return item
+            if (isString(item) && item.indexOf(',') !== -1) {
+                item = item.replace(/,/g, ' ');
+                item = item.replace(',', ' ')
+            }
+            return item
         });
         let row = rowItems.join(",");
         csvContent += row + "\r\n";
@@ -16,10 +20,10 @@ export const makeExportableCsvContent = (rows: Array<any>) => {
 };
 
 export const makeExportableCsv = (rows: Array<any>) => {
-    return new Blob([makeExportableCsvContent(rows)], { type: 'text/csv;charset=utf-8;' });
+    return new Blob([makeExportableCsvContent(rows)], {type: 'text/csv;charset=utf-8;'});
 };
 
-export const exportCsv = (csvBlob: Blob, filename:string) => {
+export const exportCsv = (csvBlob: Blob, filename: string) => {
     if (navigator.msSaveBlob) { // IE 10+
         navigator.msSaveBlob(csvBlob, filename);
     } else {

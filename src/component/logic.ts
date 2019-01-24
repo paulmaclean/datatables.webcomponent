@@ -100,7 +100,7 @@ export const searchData = (data: Array<any>, queryVal: any) => {
                         break
                     }
                 } else {
-                    if (isNumeric(queryVal)) {
+                    if (rowVal && isNumeric(queryVal)) {
                         const rowValS = rowVal.toString();
                         const queryValS = queryVal.toString();
                         if (rowValS.indexOf(queryValS) !== -1) {
