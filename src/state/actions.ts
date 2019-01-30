@@ -1,4 +1,4 @@
-import {RECEIVE_DATA, RECEIVE_ERROR, REQUEST_DATA, SET_PAGE} from "./types";
+import {RECEIVE_DATA, RECEIVE_ERROR, REQUEST_DATA} from "./types";
 import {isCollection} from "../utils/array";
 
 export const requestData = () => {
@@ -39,10 +39,3 @@ export function fetchData(url) {
         });
     }
 }
-
-export const setPage = (payload) => {
-    return {
-        type: SET_PAGE,
-        payload
-    }
-};

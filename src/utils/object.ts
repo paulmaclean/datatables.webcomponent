@@ -22,6 +22,10 @@ export const isPrimitive = (obj) => {
     return (obj !== Object(obj));
 };
 
+export const isFunction = (functionToCheck) => {
+    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
+
 export const isDefined = (item) => {
     return typeof item !== 'undefined' && item !== null && item !== "null";
 };

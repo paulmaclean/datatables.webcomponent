@@ -1,5 +1,5 @@
 export interface AppState {
-    data: Data
+    data: any,
     pagination: PaginateOpts
 }
 
@@ -65,5 +65,5 @@ export interface ExportableOpts extends ExtensionOpts {
 
 export interface Filter {
     key: string
-    value: string
+    queryVal: string
 }

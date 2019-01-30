@@ -4,6 +4,7 @@ import {connect} from "pwa-helpers/connect-mixin";
 import {store} from "../../../state/store";
 import {findInNamedSlot, findInNamedSlotDeep, getSlotElementsByName} from "../../../utils/component";
 import {getHeaders, getRows} from "../../../state/reducers/dataReducer";
+import {getExtendable} from "../../../utils/extendSelectors";
 
 
 export default class Table extends connect(store.instance())(LitElement) {
@@ -46,7 +47,7 @@ export default class Table extends connect(store.instance())(LitElement) {
 
     stateChanged(state) {
         this.headers = getHeaders(state);
-        this.rows = getRows(state);
+        this.rows = getExtendable(getRows, 'rows')(state);
     }
 
     render() {
@@ -56,15 +57,15 @@ export default class Table extends connect(store.instance())(LitElement) {
                 <header class="table-thead">
                     <slot name="table-headers">
                         ${this.headers.map((header, i) => {
-            return html`<span class="table-th">${header}</span>`
-        })}
+                            return html`<span class="table-th">${header}</span>`
+                        })}
                     </slot>
                     <slot name="extra-table-headers"></slot>
                 </header>
                 <section class="table-tbody">
                     ${this.rows.map((row) => {
-            return this.rowTemplate(row)
-        })}
+                        return this.rowTemplate(row)
+                    })}
                 </section>
             </div>
             `

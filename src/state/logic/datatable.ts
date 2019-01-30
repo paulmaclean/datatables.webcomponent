@@ -55,13 +55,13 @@ export const filterOnCol = (data: Array<any>, key: string, queryVal: string) => 
 
 export const hasActiveFilter = (filters: Array<Filter>) => {
     return filters.find((item) => {
-        return item.value !== null && item.value !== '';
+        return item.queryVal !== null && item.queryVal !== '';
     })
 };
 
-export const isActiveFilter = (filters: Array<Filter>, key: string) => {
+export const isSelectedFilter = (filters: Array<Filter>, key: string) => {
     return filters.find((item) => {
-        return item.value !== null && item.value !== '' && item.key === key;
+        return item.queryVal !== null && item.queryVal !== '' && item.key === key;
     })
 };
 
@@ -72,7 +72,7 @@ export const sumOnCol = (data: Array<any>, key: string) => {
 };
 
 export const uniqueValuesInCol = (data: Array<any>, key: string) => {
-    return map(uniqBy(data, key), key);
+    return map(uniqBy(data, key), key).sort();
 };
 
 export const searchData = (data: Array<any>, queryVal: any) => {
@@ -116,15 +116,6 @@ export const searchData = (data: Array<any>, queryVal: any) => {
     return results;
 };
 
-
-export const applyAllFilters = (data: Array<any>, filters: Array<Filter>) => {
-    filters.forEach((filter) => {
-        if (filter.value) {
-            data = filterOnCol(data, filter.key, filter.value)
-        }
-    });
-    return data;
-};
 
 export const updateFilters = (filters: Array<Filter>, key: string, value: string) => {
     return filters.map((filter) => {

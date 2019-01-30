@@ -1,25 +1,24 @@
 import {RECEIVE_DATA} from "../types";
-import {AppState, Data, PaginateOpts} from "../../declarations";
+import {AppState} from "../../declarations";
 import {collectionToValues} from "../../utils/array";
-import {getPageSlice} from "../logic/datatable";
 import {createSelector} from "reselect";
-import {getPagination} from "./paginationReducer";
+import {getExtendable} from "../../utils/extendSelectors";
 
-export const dataReducer = (data: Data, action?: any) => {
+export const dataReducer = (data = [], action?: any) => {
     switch (action.type) {
         case RECEIVE_DATA:
-            return {...data, active: action.payload, original: action.payload};
+            return action.payload;
         default:
             return data;
     }
 };
 
-export const getData = (state: AppState) => {
-    return state.data.active;
+export const getActiveData = (state: AppState) => {
+    return state.data
 };
 
-export const getOriginalData = (state: AppState) => {
-    return state.data.original;
+export const getData = (state: AppState) => {
+    return state.data;
 };
 
 export const getHeaders = createSelector(
@@ -32,29 +31,7 @@ export const getHeaders = createSelector(
     }
 );
 
-export const getRows = createSelector(
-    getData,
-    getPagination,
-    (data: Array<any>, pagination: PaginateOpts) => {
-        const rows = collectionToValues(data);
-        if (pagination && pagination.enabled) {
-            return getPageSlice(rows, pagination.currentPage, pagination.resultsPerPage)
-        }
-
-        return rows;
-    }
-);
-
-export const getTotalItems = createSelector(
-    getData,
-    (data: Array<any>) => {
-        return data.length
-    }
-);
-
-export const getTotalActiveItems = createSelector(
-    getRows,
-    (rows: Array<any>) => {
-        return rows.length
-    }
-);
+export const getRows = (state) => {
+    const data = getExtendable(getActiveData, 'activeData')(state);
+    return collectionToValues(data)
+};

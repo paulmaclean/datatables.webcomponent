@@ -1,5 +1,5 @@
 import {LitElement, html, property} from "@polymer/lit-element";
-import {isActiveFilter} from "../../../state/logic/datatable";
+import {isSelectedFilter} from "../../../state/logic/datatable";
 import {store} from "../../../state/store";
 import {filterData} from "../state/actions";
 // import {filterOnCol, isActiveFilter, searchData, uniqueValuesInCol, updateFilters} from "../data-table/logic";
@@ -32,7 +32,7 @@ export default class ColumnFilter extends LitElement {
             <select @change="${(ev: any) => {this.filterCol(this.key, ev.path[0].value)}}">
                 <option value="">--${this.key}--</option>
                 ${this.options.map((opt) => {
-                    return html`<option ?selected="${isActiveFilter(this.activeFilters, opt)}" value="${opt}">${opt}</option>`
+                    return html`<option ?selected="${isSelectedFilter(this.activeFilters, opt)}" value="${opt}">${opt}</option>`
                 })}
             </select>`
     }

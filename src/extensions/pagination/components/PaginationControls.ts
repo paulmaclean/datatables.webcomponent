@@ -2,9 +2,15 @@ import {LitElement, html, property} from "@polymer/lit-element";
 //import pureCss from "../../shared/pure-min.css"
 import {connect} from "pwa-helpers/connect-mixin";
 import {store} from "../../../state/store";
-import {getCurrentPage, getResultsPerPage, getTotalPages} from "../../../state/reducers/paginationReducer";
-import {getTotalActiveItems, getTotalItems} from "../../../state/reducers/dataReducer";
-import {setPage} from "../../../state/actions";
+
+import {
+    getCurrentPage,
+    getResultsPerPage,
+    getTotalRows,
+    getTotalItems,
+    getTotalPages, getPaginatedRows
+} from "../state/paginationReducer";
+import {setPage} from "../state/actions";
 
 export default class Pagination extends connect(store.instance())(LitElement) {
 
@@ -29,7 +35,7 @@ export default class Pagination extends connect(store.instance())(LitElement) {
         this.currentPage = getCurrentPage(state);
         this.totalPages = getTotalPages(state);
         this.totalItems = getTotalItems(state);
-        this.totalActiveItems = getTotalActiveItems(state);
+        this.totalActiveItems = getTotalRows(state);
         this.resultsPerPage = getResultsPerPage(state);
     }
 
