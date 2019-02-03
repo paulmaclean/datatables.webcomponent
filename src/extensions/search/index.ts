@@ -1,11 +1,10 @@
-import {store} from "../../state/store";
-import {defineComponent} from "../..";
-import {getActiveData, searchReducer} from "./state/dataReducer";
+import {searchReducer} from "./state/reducer";
 import Search from "./components/Search";
+import {addReducer} from "../../utils/extendableStore";
+import {defineComponent} from "../../utils/component";
 
 export const initSearch = (namespace: string) => {
-    store.addReducer('search', searchReducer);
-    store.addSelector({getActiveData});
+    addReducer({'search': searchReducer});
     defineComponent(Search.componentName, Search, namespace);
 };
 

@@ -1,7 +1,6 @@
 import {LitElement, html, property} from "@polymer/lit-element";
 //import pureCss from "../../shared/pure-min.css"
 import {connect} from "pwa-helpers/connect-mixin";
-import {store} from "../../../state/store";
 
 import {
     getCurrentPage,
@@ -9,10 +8,11 @@ import {
     getTotalRows,
     getTotalItems,
     getTotalPages, getPaginatedRows
-} from "../state/paginationReducer";
+} from "../state/reducer";
 import {setPage} from "../state/actions";
+import {dispatch, getStore} from "../../../utils/extendableStore";
 
-export default class Pagination extends connect(store.instance())(LitElement) {
+export default class Pagination extends connect(getStore())(LitElement) {
 
     public static componentName = 'pagination-controls';
 
@@ -39,17 +39,25 @@ export default class Pagination extends connect(store.instance())(LitElement) {
         this.resultsPerPage = getResultsPerPage(state);
     }
 
+    public createRenderRoot() {
+        return this;
+    }
+
     render() {
         return html`
         <style></style>
-        <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {this.changePage(1)}}" type="button">First</button>
-        <button class="pure-button control-item" ?disabled="${this.currentPage <= 1}" @click="${() => {this.prevPage()}}" type="button">&lt;&lt;Prev</button>
-        <button class="pure-button control-item" ?disabled="${this.currentPage >= this.totalPages}" @click="${() => {this.nextPage()}}" type="button">Next&gt;&gt;</button>
-        <button class="pure-button control-item" ?disabled="${this.currentPage >= this.totalPages}" @click="${() => {this.changePage(this.totalPages)}}" type="button">Last</button>
-        <span class="control-item">Page ${this.currentPage} of ${this.totalPages}</span>
-        <input id="go" class="control-item" type="number" min="1" max="${this.totalPages}" value="${this.currentPage}">
-        <button class="pure-button control-item" @click="${() => {this.gotoPage()}}" type="button">Go</button>
-        <span class="showing control-item right">Showing ${this.totalActiveItems} of ${this.totalItems}</span>`
+        <div class="form flex-horizontal">
+            <button class="btn btn-outline-primary" ?disabled="${this.currentPage <= 1}" @click="${() => {this.changePage(1)}}" type="button">First</button>
+            <button class="btn btn-outline-primary" ?disabled="${this.currentPage <= 1}" @click="${() => {this.prevPage()}}" type="button">&lt;&lt;Prev</button>
+            <button class="btn btn-outline-primary" ?disabled="${this.currentPage >= this.totalPages}" @click="${() => {this.nextPage()}}" type="button">Next&gt;&gt;</button>
+            <button class="btn btn-outline-primary" ?disabled="${this.currentPage >= this.totalPages}" @click="${() => {this.changePage(this.totalPages)}}" type="button">Last</button>
+            <span class="control-item spaced">Page ${this.currentPage} of ${this.totalPages}</span>
+            <input id="go" class="form-control" type="number" min="1" max="${this.totalPages}" value="${this.currentPage}">
+            <button class="btn btn-primary" @click="${() => {this.gotoPage()}}" type="button">Go</button>
+            <span class="showing control-item right spaced">Showing ${this.totalActiveItems} of ${this.totalItems}</span>
+        </div>
+           
+    `
     }
 
     nextPage() {
@@ -74,7 +82,7 @@ export default class Pagination extends connect(store.instance())(LitElement) {
             pageNum = 1;
         }
         this.currentPage = pageNum;
-        store.dispatch(setPage(this.currentPage));
+        dispatch(setPage(this.currentPage));
     }
 
 

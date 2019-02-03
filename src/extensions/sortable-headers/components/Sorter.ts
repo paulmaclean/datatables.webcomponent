@@ -1,6 +1,6 @@
 import {LitElement, html, property} from "@polymer/lit-element";
-import {store} from "../../../state/store";
 import {sortData} from "../state/actions";
+import {dispatch} from "../../../utils/extendableStore";
 
 export default class Sorter extends LitElement {
     public static componentName = 'sorter';
@@ -25,7 +25,7 @@ export default class Sorter extends LitElement {
     sortCol(key: string) {
         this.setFlag();
         let order = this.sortFlag === 1 ? 'ASC' : 'DESC';
-        store.dispatch(sortData({key, order}));
+        dispatch(sortData({key, order}));
     }
 
     setFlag() {

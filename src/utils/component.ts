@@ -94,3 +94,29 @@ const slotAssignedElements = (slot) => {
         }
     }).filter(element => element)
 };
+
+export const getSlottedContent = (el, slotName, defaultContent = null)  =>{
+    if(hasSlotted(el, slotName)) {
+        if(!el.slotted) {
+            el.slotted = {};
+        }
+        if(!el.slotted[slotName]){
+            el.slotted[slotName] = getClonedSlotted(el,slotName)
+        }
+        return el.slotted[slotName]
+    }
+
+    if(defaultContent){
+        return defaultContent;
+    }
+    
+    return '';
+}
+
+export const hasSlotted = (el, slotName) => {
+    return el.querySelector(`[slot="${slotName}"]`)
+}
+
+export const getClonedSlotted =(el, slotName) => {
+    return el.querySelector(`[slot="${slotName}"]`).cloneNode(true)
+}

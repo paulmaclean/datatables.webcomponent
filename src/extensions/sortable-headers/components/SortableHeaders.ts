@@ -1,12 +1,11 @@
 import {LitElement, html, property} from "@polymer/lit-element";
-import psuedoTable from "../../../shared/psuedo-table.css"
 import {connect} from "pwa-helpers/connect-mixin";
-import {store} from "../../../state/store";
-import {defineComponent} from "../../..";
 import Sorter from "./Sorter";
-import {getHeaders} from "../../../state/reducers/dataReducer";
+import {getStore} from "../../../utils/extendableStore";
+import {getHeaders} from "../../../modules/data-table/src/state/reducer";
+import {defineComponent} from "../../../utils/component";
 
-export default class SortableHeaders extends connect(store.instance())(LitElement) {
+export default class SortableHeaders extends connect(getStore())(LitElement) {
     public static componentName = 'sortable-headers';
 
     @property({type: Array})
@@ -21,6 +20,9 @@ export default class SortableHeaders extends connect(store.instance())(LitElemen
     @property({type: Array})
     headers: Array<any>;
 
+    @property({type: Object})
+    theme = '';
+
     stateChanged(state) {
         this.headers = getHeaders(state);
     }
@@ -31,23 +33,23 @@ export default class SortableHeaders extends connect(store.instance())(LitElemen
 
     connectedCallback() {
         super['connectedCallback']();
-        this['classList'].add('table-tr');
+        this['classList'].add('tr');
     }
 
     render() {
         return html `
-            <style>${psuedoTable}</style>
+            <style>.tr {display: table-row;}</style>
             ${this.headers.map((header, i) => {
                 if (this.exceptions.indexOf(i) !== -1) {
                     return html `
-                        <span class="table-th">${header}</span>`
+                        <th>${header}</th>`
                 } else {
                     return html `
-                        <span class="table-th">
+                        <th>
                             <slot name="sorter">
                                 <data-table-sorter columnKey="${header}"></data-table-sorter>
                             </slot>                   
-                        </span>`
+                        </th>`
                 }
             })}
             `

@@ -1,10 +1,10 @@
-import {store} from "../../state/store";
-import {filtersReducer} from "./state/filtersReducer";
-import {defineComponent} from "../..";
+import {reducer} from "./state/reducer";
 import ColumnFilters from "./components/ColumnFilters";
+import {addReducer} from "../../utils/extendableStore";
+import {defineComponent} from "../../utils/component";
 
 export const initColumnFilters = (namespace: string) => {
-    store.addReducer('filters', filtersReducer);
+    addReducer({'filters': reducer});
     defineComponent(ColumnFilters.componentName, ColumnFilters, namespace);
 };
 

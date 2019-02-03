@@ -1,0 +1,17 @@
+.flex-horizontal {
+    display: flex;
+    align-items: center;
+}
+
+.flex-horizontal .form-control {
+    width: auto;
+}
+
+.spaced {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+th select {
+    font-weight: normal;
+}

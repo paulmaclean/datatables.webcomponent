@@ -1,16 +1,15 @@
 import {LitElement, html, property} from "@polymer/lit-element";
-import psuedoTable from "../../../shared/psuedo-table.css"
 import {connect} from "pwa-helpers/connect-mixin";
-import {store} from "../../../state/store";
-import {getData} from "../../../state/reducers/dataReducer";
-import {defineComponent} from "../../..";
 import {changeFilterableColumns} from "../state/actions";
-import {getFilterableColumnHeaders} from "../state/filtersReducer";
-import {uniqueValuesInCol} from "../../../state/logic/datatable";
+import {getFilterableColumnHeaders} from "../state/reducer";
 import ColumnFilter from "./ColumnFilter";
+import {dispatch, getStore} from "../../../utils/extendableStore";
+import {getData} from "../../../modules/data-table/src/state/reducer";
+import {uniqueValuesInCol} from "../logic";
+import {defineComponent} from "../../../utils/component";
 
 
-export default class ColumnFilters extends connect(store.instance())(LitElement) {
+export default class ColumnFilters extends connect(getStore())(LitElement) {
     public static componentName = 'column-filters';
 
     @property({type: Array})
@@ -34,27 +33,27 @@ export default class ColumnFilters extends connect(store.instance())(LitElement)
 
     connectedCallback() {
         super['connectedCallback']();
-        this['classList'].add('table-tr');
+        this['classList'].add('tr');
     }
 
     updated(props) {
         if(props.has('filterableColumns')) {
-            store.dispatch(changeFilterableColumns(this.filterableColumns))
+            dispatch(changeFilterableColumns(this.filterableColumns))
         }
     }
 
     render() {
             return html `
-            <style>${psuedoTable}</style>
+            <style>.tr {display: table-row;}</style>
             ${this.filterableColumnHeaders.map((key, i) => {
                 if (key) {
                     const options = uniqueValuesInCol(this.data, key);
                     return html `
-                        <span class="table-th">
+                        <th class="form">
                             <data-table-column-filter .options="${options}" key="${key}"></data-table-column-filter>
-                        </span>`;
+                        </th>`;
                 }
-                    return html `<span class="table-th"></span>`
+                    return html `<th></th>`
             })}
 
             `

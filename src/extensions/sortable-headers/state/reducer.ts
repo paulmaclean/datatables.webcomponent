@@ -1,10 +1,9 @@
 import {SORT_DATA} from "./actions";
-import {toggleSort} from "../../../state/logic/datatable";
-import {extendSelector, getExtendable} from "../../../utils/extendSelectors";
-import {getActiveData} from "../../../state/reducers/dataReducer";
-import {store} from "../../../state/store";
+import {ExtendableSelectors} from "../../../modules/data-table/src/state/extendableSelectors";
+import {extendSelector} from "../../../utils/extendableSelectors";
+import {toggleSort} from "../logic";
 
-export const sortReducer = (sort: { sorter: {} }, action?: any) => {
+export const sortReducer = (sort = { sorter: {} }, action?: any) => {
     switch (action.type) {
         case SORT_DATA:
             return {...sort, sorter: action.payload};
@@ -13,14 +12,17 @@ export const sortReducer = (sort: { sorter: {} }, action?: any) => {
     }
 };
 
+export const getSortState = (state) => {
+    return state.sort;
+};
+
 export const getSortedData = extendSelector(
-    getActiveData,
-    (data) => {
-        const state = store.instance().getState();
-        if (!state.sort || !state.sort.sorter) {
+    ExtendableSelectors.ACTIVE_DATA,
+    getSortState,
+    (data,sortState) => {
+        if (!sortState || !sortState.sorter) {
             return data;
         }
-        return toggleSort(data, state.sort.sorter.key, state.sort.sorter.order)
+        return toggleSort(data, sortState.sorter.key, sortState.sorter.order)
     },
-    'activeData'
 );

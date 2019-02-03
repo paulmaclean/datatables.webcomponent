@@ -1,11 +1,11 @@
-import {store} from "../../state/store";
-import {defineComponent} from "../..";
-import {paginationReducer} from "./state/paginationReducer";
+import {reducer} from "./state/reducer";
 import Pagination from "./components/PaginationControls";
 import PerPageSelector from "./components/PerPageSelector";
+import {addReducer} from "../../utils/extendableStore";
+import {defineComponent} from "../../utils/component";
 
 export const initPagination = (namespace: string) => {
-    store.addReducer('pagination', paginationReducer);
+    addReducer({pagination: reducer});
     defineComponent(Pagination.componentName, Pagination, namespace);
     defineComponent(PerPageSelector.componentName, PerPageSelector, namespace);
 };
